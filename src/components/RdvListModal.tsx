@@ -131,7 +131,7 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
               {rdvs.map((rdv) => (
                 <div
                   key={rdv.id}
-                  className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+                  className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all"
                 >
                   {editingId === rdv.id ? (
                     <div className="space-y-3">
@@ -173,36 +173,50 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3">
-                          <span className="font-semibold text-gray-900">
-                            {format(new Date(rdv.date_heure), 'dd MMMM yyyy à HH:mm', { locale: fr })}
-                          </span>
-                          <span
-                            className={`px-2 py-1 text-xs rounded-full ${
-                              rdv.statut === 'realise'
-                                ? 'bg-green-100 text-green-700'
-                                : rdv.statut === 'planifie'
-                                ? 'bg-blue-100 text-blue-700'
-                                : 'bg-red-100 text-red-700'
-                            }`}
-                          >
-                            {rdv.statut === 'realise' ? 'Réalisé' : rdv.statut === 'planifie' ? 'Planifié' : 'Annulé'}
-                          </span>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col space-y-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-lg font-bold text-gray-900">
+                              {format(new Date(rdv.date_heure), 'dd', { locale: fr })}
+                            </span>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium text-gray-700">
+                                {format(new Date(rdv.date_heure), 'MMMM yyyy', { locale: fr })}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                à {format(new Date(rdv.date_heure), 'HH:mm', { locale: fr })}
+                              </span>
+                            </div>
+                            <span
+                              className={`px-3 py-1 text-xs font-medium rounded-full ${
+                                rdv.statut === 'realise'
+                                  ? 'bg-green-100 text-green-700'
+                                  : rdv.statut === 'planifie'
+                                  ? 'bg-blue-100 text-blue-700'
+                                  : 'bg-red-100 text-red-700'
+                              }`}
+                            >
+                              {rdv.statut === 'realise' ? 'Réalisé' : rdv.statut === 'planifie' ? 'Planifié' : 'Annulé'}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            <span className="font-medium">Opérateur:</span> {rdv.operateur}
+                          </p>
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">Opérateur: {rdv.operateur}</p>
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex gap-1 flex-shrink-0">
                         <button
                           onClick={() => startEdit(rdv)}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Modifier"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(rdv.id)}
                           className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Supprimer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
