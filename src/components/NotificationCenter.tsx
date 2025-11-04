@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Bell, X, CheckCircle, AlertTriangle, Info } from 'lucide-react'
 
 interface Notification {

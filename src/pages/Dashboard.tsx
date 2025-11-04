@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { RefreshCw, TrendingUp, Target, AlertCircle, Plus } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import { useAlertes } from '@/hooks/useAlertes'
+import { useNotificationMonitor } from '@/hooks/useNotificationMonitor'
 import { getProjectRecommendation } from '@/lib/scoring'
 import ProjectCard from '@/components/ProjectCard'
 import AlertCard from '@/components/AlertCard'
@@ -12,6 +13,9 @@ export default function Dashboard() {
   const { projets, loading: loadingProjets, refetch: refetchProjets } = useProjects()
   const { alertes, loading: loadingAlertes } = useAlertes()
   const [showAddRdvModal, setShowAddRdvModal] = useState(false)
+  
+  // Monitoring des notifications
+  useNotificationMonitor(projets)
 
   const recommendation = useMemo(() => {
     if (projets.length === 0) return null
