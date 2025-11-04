@@ -12,9 +12,10 @@ interface RdvListModalProps {
   projetNom: string
   onClose: () => void
   onUpdate: () => void
+  onRefresh?: () => void // Pour rafraîchir sans fermer le modal
 }
 
-export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }: RdvListModalProps) {
+export default function RdvListModal({ projetId, projetNom, onClose, onUpdate, onRefresh }: RdvListModalProps) {
   const [rdvs, setRdvs] = useState<Rdv[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -55,7 +56,8 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
       
       // Rafraîchir la liste des RDV dans le modal
       await fetchRdvs()
-      // Ne pas appeler onUpdate() ici pour ne pas fermer le modal
+      // Rafraîchir les données du projet parent sans fermer le modal
+      onRefresh?.()
     } catch (error) {
       console.error('Erreur lors de la suppression:', error)
       alert('Erreur lors de la suppression du RDV')

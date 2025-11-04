@@ -183,6 +183,9 @@ export default function ProjectCard({ projet, onUpdate }: ProjectCardProps) {
             setShowRdvModal(false)
             onUpdate?.()
           }}
+          onRefresh={() => {
+            onUpdate?.() // Rafraîchir sans fermer le modal
+          }}
         />
       )}
     </div>
