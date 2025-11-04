@@ -54,8 +54,12 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate, o
       const { error } = await supabase.from('rdv').delete().eq('id', id)
       if (error) throw error
       
+      // Attendre un peu que le trigger SQL se termine
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       // Rafraîchir la liste des RDV dans le modal
       await fetchRdvs()
+      
       // Rafraîchir les données du projet parent sans fermer le modal
       onRefresh?.()
     } catch (error) {
