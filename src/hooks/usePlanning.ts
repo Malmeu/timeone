@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { Planning } from '@/types'
 
 export function usePlanning(date: Date = new Date()) {
-  const [planning, setPlanning] = useState<(Planning & { projet_nom?: string })[]>([])
+  const [planning, setPlanning] = useState<(Planning & { projet_nom?: string, taux_avancement?: number })[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -17,19 +17,43 @@ export function usePlanning(date: Date = new Date()) {
         .from('planning')
         .select(`
           *,
-          projets (nom)
+          projets (nom, objectif_quotidien)
         `)
         .eq('date', dateStr)
         .order('creneau_debut')
 
       if (planningError) throw planningError
 
-      const planningWithNames = (data || []).map((item: any) => ({
-        ...item,
-        projet_nom: item.projets?.nom || 'Non assigné',
-      }))
+      // Calculer le taux d'avancement en temps réel pour chaque créneau
+      const planningWithProgress = await Promise.all(
+        (data || []).map(async (item: any) => {
+          let taux_avancement = 0
+          
+          if (item.projet_id && item.projets) {
+            // Compter les RDV réalisés pour toute la journée
+            const startOfDay = `${dateStr}T00:00:00`
+            const endOfDay = `${dateStr}T23:59:59`
+            
+            const { count } = await supabase
+              .from('rdv')
+              .select('*', { count: 'exact', head: true })
+              .eq('projet_id', item.projet_id)
+              .gte('date_heure', startOfDay)
+              .lte('date_heure', endOfDay)
+            
+            // Calculer le taux basé sur l'objectif quotidien total
+            taux_avancement = ((count || 0) / item.projets.objectif_quotidien) * 100
+          }
+          
+          return {
+            ...item,
+            projet_nom: item.projets?.nom || 'Non assigné',
+            taux_avancement: taux_avancement,
+          }
+        })
+      )
 
-      setPlanning(planningWithNames)
+      setPlanning(planningWithProgress)
       setError(null)
     } catch (err) {
       console.error('Error fetching planning:', err)
