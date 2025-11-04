@@ -1,15 +1,17 @@
-import { useMemo } from 'react'
-import { RefreshCw, TrendingUp, Target, AlertCircle } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { RefreshCw, TrendingUp, Target, AlertCircle, Plus } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import { useAlertes } from '@/hooks/useAlertes'
 import { getProjectRecommendation } from '@/lib/scoring'
 import ProjectCard from '@/components/ProjectCard'
 import AlertCard from '@/components/AlertCard'
 import RecommendationCard from '@/components/RecommendationCard'
+import AddRdvModal from '@/components/AddRdvModal'
 
 export default function Dashboard() {
   const { projets, loading: loadingProjets, refetch: refetchProjets } = useProjects()
   const { alertes, loading: loadingAlertes } = useAlertes()
+  const [showAddRdvModal, setShowAddRdvModal] = useState(false)
 
   const recommendation = useMemo(() => {
     if (projets.length === 0) return null
@@ -60,13 +62,22 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-500 mt-1">Vue d'ensemble de vos projets</p>
         </div>
-        <button
-          onClick={refetchProjets}
-          className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Actualiser
-        </button>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setShowAddRdvModal(true)}
+            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter un RDV
+          </button>
+          <button
+            onClick={refetchProjets}
+            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Actualiser
+          </button>
+        </div>
       </div>
 
       {/* Stats globales */}
@@ -146,6 +157,18 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Modal d'ajout de RDV */}
+      {showAddRdvModal && (
+        <AddRdvModal
+          projets={projets}
+          onClose={() => setShowAddRdvModal(false)}
+          onSuccess={() => {
+            refetchProjets()
+            setShowAddRdvModal(false)
+          }}
+        />
       )}
     </div>
   )
