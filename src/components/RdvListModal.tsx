@@ -53,8 +53,9 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
       const { error } = await supabase.from('rdv').delete().eq('id', id)
       if (error) throw error
       
+      // Rafraîchir la liste des RDV dans le modal
       await fetchRdvs()
-      onUpdate()
+      // Ne pas appeler onUpdate() ici pour ne pas fermer le modal
     } catch (error) {
       console.error('Erreur lors de la suppression:', error)
       alert('Erreur lors de la suppression du RDV')

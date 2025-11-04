@@ -8,11 +8,13 @@ import ProjectCard from '@/components/ProjectCard'
 import AlertCard from '@/components/AlertCard'
 import RecommendationCard from '@/components/RecommendationCard'
 import AddRdvModal from '@/components/AddRdvModal'
+import AddProjetModal from '@/components/AddProjetModal'
 
 export default function Dashboard() {
   const { projets, loading: loadingProjets, refetch: refetchProjets } = useProjects()
   const { alertes, loading: loadingAlertes } = useAlertes()
   const [showAddRdvModal, setShowAddRdvModal] = useState(false)
+  const [showAddProjetModal, setShowAddProjetModal] = useState(false)
   
   // Monitoring des notifications
   useNotificationMonitor(projets)
@@ -67,6 +69,13 @@ export default function Dashboard() {
           <p className="text-gray-500 mt-1">Vue d'ensemble de vos projets</p>
         </div>
         <div className="flex space-x-3">
+          <button
+            onClick={() => setShowAddProjetModal(true)}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nouveau Projet
+          </button>
           <button
             onClick={() => setShowAddRdvModal(true)}
             className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
@@ -141,7 +150,7 @@ export default function Dashboard() {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Vos Projets</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projets.map((projet) => (
-            <ProjectCard key={projet.id} projet={projet} />
+            <ProjectCard key={projet.id} projet={projet} onUpdate={refetchProjets} />
           ))}
         </div>
         {projets.length === 0 && (
@@ -161,6 +170,17 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Modal d'ajout de projet */}
+      {showAddProjetModal && (
+        <AddProjetModal
+          onClose={() => setShowAddProjetModal(false)}
+          onSuccess={() => {
+            refetchProjets()
+            setShowAddProjetModal(false)
+          }}
+        />
       )}
 
       {/* Modal d'ajout de RDV */}

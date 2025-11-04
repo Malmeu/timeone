@@ -5,6 +5,7 @@ export interface Projet {
   objectif_quotidien: number
   solde_rdv: number
   rentabilite_estimee: number
+  statut?: 'actif' | 'en_pause' | 'termine'
   rdv_realises_jour?: number
   rdv_realises_mois?: number
   taux_avancement_jour?: number

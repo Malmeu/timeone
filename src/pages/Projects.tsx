@@ -3,6 +3,7 @@ import { Plus, RefreshCw } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import ProjectCard from '@/components/ProjectCard'
 import AddRdvModal from '@/components/AddRdvModal'
+import AddProjetModal from '@/components/AddProjetModal'
 
 export default function Projects() {
   const { projets, loading, refetch } = useProjects()
@@ -58,7 +59,7 @@ export default function Projects() {
       {/* Liste des projets */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projets.map((projet) => (
-          <ProjectCard key={projet.id} projet={projet} />
+          <ProjectCard key={projet.id} projet={projet} onUpdate={refetch} />
         ))}
       </div>
 
@@ -83,22 +84,15 @@ export default function Projects() {
         </div>
       )}
 
-      {/* Modal d'ajout de projet (placeholder) */}
+      {/* Modal d'ajout de projet */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 card-shadow-lg">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Nouveau Projet</h2>
-            <p className="text-gray-600 mb-6">
-              Fonctionnalité en développement. Formulaire d'ajout de projet à venir.
-            </p>
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-            >
-              Fermer
-            </button>
-          </div>
-        </div>
+        <AddProjetModal
+          onClose={() => setShowAddModal(false)}
+          onSuccess={() => {
+            refetch()
+            setShowAddModal(false)
+          }}
+        />
       )}
 
       {/* Modal d'ajout de RDV */}
