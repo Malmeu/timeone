@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { X, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { Projet } from '@/types'
+import { Projet } from '@/types/database'
 
 interface AddRdvModalProps {
   projets: Projet[]
@@ -23,14 +23,12 @@ export default function AddRdvModal({ projets, onClose, onSuccess }: AddRdvModal
     setLoading(true)
 
     try {
-      const { error } = await supabase.from('rdv').insert([
-        {
-          projet_id: formData.projet_id,
-          date_heure: formData.date_heure,
-          operateur: formData.operateur,
-          statut: formData.statut,
-        },
-      ])
+      const { error } = await supabase.from('rdv').insert([{
+        projet_id: formData.projet_id,
+        date_heure: formData.date_heure,
+        operateur: formData.operateur,
+        statut: formData.statut,
+      }] as any)
 
       if (error) throw error
 

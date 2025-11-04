@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Projet } from '@/types'
 import { startOfMonth, startOfDay, endOfDay } from 'date-fns'
 
 export function useProjects() {
-  const [projets, setProjets] = useState<Projet[]>([])
+  const [projets, setProjets] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

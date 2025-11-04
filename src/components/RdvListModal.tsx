@@ -4,13 +4,7 @@ import { X, Edit2, Trash2, Calendar } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-
-interface Rdv {
-  id: string
-  date_heure: string
-  operateur: string
-  statut: string
-}
+import { Rdv, RdvUpdate, Projet } from '@/types/database'
 
 interface RdvListModalProps {
   projetId: string
@@ -79,14 +73,13 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
     if (!editingId) return
 
     try {
-      // @ts-ignore - Supabase type issue
       const { error } = await supabase
         .from('rdv')
         .update({
           date_heure: editForm.date_heure,
           operateur: editForm.operateur,
           statut: editForm.statut,
-        })
+        } as any)
         .eq('id', editingId)
 
       if (error) throw error
