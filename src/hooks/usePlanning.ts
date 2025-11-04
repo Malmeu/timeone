@@ -7,10 +7,6 @@ export function usePlanning(date: Date = new Date()) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchPlanning()
-  }, [date])
-
   async function fetchPlanning() {
     try {
       setLoading(true)
@@ -42,6 +38,11 @@ export function usePlanning(date: Date = new Date()) {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchPlanning()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date.toISOString()])
 
   return { planning, loading, error, refetch: fetchPlanning }
 }

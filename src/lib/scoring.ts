@@ -39,20 +39,36 @@ export function calculateProjectScore(projet: Projet): number {
 
 export function getProjectRecommendation(projets: Projet[]): ProjetScore | null {
   if (projets.length === 0) return null
-  
-  const scores = projets.map(projet => ({
-    projet_id: projet.id,
-    score: calculateProjectScore(projet),
-    raison: generateReason(projet),
-  }))
-  
-  // Trier par score décroissant
-  scores.sort((a, b) => b.score - a.score)
-  
-  return scores[0]
+
+  // Trouver le projet le moins avancé (taux d'avancement le plus faible)
+  let lowestProgress = 100
+  let selectedProjet: Projet | null = null
+
+  for (const projet of projets) {
+    const tauxJour = projet.taux_avancement_jour || 0
+    const tauxMois = projet.taux_avancement_mois || 0
+    
+    // Prioriser d'abord le taux journalier, puis le taux mensuel
+    const progressScore = tauxJour * 0.7 + tauxMois * 0.3
+    
+    if (progressScore < lowestProgress) {
+      lowestProgress = progressScore
+      selectedProjet = projet
+    }
+  }
+
+  if (!selectedProjet) return null
+
+  const score = calculateProjectScore(selectedProjet)
+
+  return {
+    projet_id: selectedProjet.id,
+    score: score,
+    raison: getRecommendationReason(selectedProjet),
+  }
 }
 
-function generateReason(projet: Projet): string {
+function getRecommendationReason(projet: Projet): string {
   const tauxJour = projet.taux_avancement_jour || 0
   const tauxMois = projet.taux_avancement_mois || 0
   

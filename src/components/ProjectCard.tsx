@@ -1,12 +1,16 @@
-import { TrendingUp, TrendingDown, Target } from 'lucide-react'
+import { useState } from 'react'
+import { TrendingUp, TrendingDown, Target, Calendar } from 'lucide-react'
 import { Projet } from '@/types'
 import { getProgressColor, getProgressBgColor } from '@/lib/utils'
+import RdvListModal from './RdvListModal'
 
 interface ProjectCardProps {
   projet: Projet
+  onUpdate?: () => void
 }
 
-export default function ProjectCard({ projet }: ProjectCardProps) {
+export default function ProjectCard({ projet, onUpdate }: ProjectCardProps) {
+  const [showRdvModal, setShowRdvModal] = useState(false)
   const tauxJour = projet.taux_avancement_jour || 0
   const tauxMois = projet.taux_avancement_mois || 0
 
@@ -92,11 +96,33 @@ export default function ProjectCard({ projet }: ProjectCardProps) {
         </div>
       </div>
 
-      {/* Solde */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="text-xs text-gray-500">Solde RDV restant</div>
-        <div className="text-xl font-bold text-gray-900">{projet.solde_rdv}</div>
+      {/* Solde et Actions */}
+      <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+        <div>
+          <div className="text-xs text-gray-500">Solde RDV restant</div>
+          <div className="text-xl font-bold text-gray-900">{projet.solde_rdv}</div>
+        </div>
+        <button
+          onClick={() => setShowRdvModal(true)}
+          className="flex items-center px-3 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+        >
+          <Calendar className="w-4 h-4 mr-1" />
+          Voir RDV
+        </button>
       </div>
+
+      {/* Modal RDV */}
+      {showRdvModal && (
+        <RdvListModal
+          projetId={projet.id}
+          projetNom={projet.nom}
+          onClose={() => setShowRdvModal(false)}
+          onUpdate={() => {
+            setShowRdvModal(false)
+            onUpdate?.()
+          }}
+        />
+      )}
     </div>
   )
 }
