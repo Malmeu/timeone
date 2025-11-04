@@ -3,6 +3,7 @@ import { NotificationProvider } from './contexts/NotificationContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Planning from './pages/Planning'
 import Projects from './pages/Projects'
@@ -12,8 +13,9 @@ function App() {
     <NotificationProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public Route */}
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           
           {/* Protected Routes */}
           <Route

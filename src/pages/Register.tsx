@@ -1,51 +1,91 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
+    // Validation
+    if (formData.password !== formData.confirmPassword) {
+      setError('Les mots de passe ne correspondent pas')
+      setLoading(false)
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError('Le mot de passe doit contenir au moins 6 caractères')
+      setLoading(false)
+      return
+    }
+
     try {
-      // Authentification avec Supabase
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      // Inscription avec Supabase
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            name: formData.name,
+          },
+        },
       })
 
-      if (authError) {
-        throw authError
+      if (signUpError) {
+        throw signUpError
       }
 
       if (data.user) {
-        // Stocker l'état de connexion
-        localStorage.setItem('isAuthenticated', 'true')
-        localStorage.setItem('userEmail', email)
-        localStorage.setItem('userId', data.user.id)
-        navigate('/dashboard')
+        setSuccess(true)
+        // Rediriger vers la page de connexion après 2 secondes
+        setTimeout(() => {
+          navigate('/login')
+        }, 2000)
       }
     } catch (err: any) {
-      console.error('Erreur de connexion:', err)
-      if (err.message.includes('Invalid login credentials')) {
-        setError('Email ou mot de passe incorrect')
-      } else if (err.message.includes('Email not confirmed')) {
-        setError('Veuillez confirmer votre email avant de vous connecter')
+      console.error('Erreur d\'inscription:', err)
+      if (err.message.includes('already registered')) {
+        setError('Cet email est déjà utilisé')
       } else {
-        setError(err.message || 'Une erreur est survenue lors de la connexion')
+        setError(err.message || 'Une erreur est survenue lors de l\'inscription')
       }
     } finally {
       setLoading(false)
     }
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-blue-50 flex items-center justify-center p-4">
+        <div className="glass-effect rounded-2xl shadow-2xl p-8 border border-gray-200/50 max-w-md w-full text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+            <span className="text-3xl">✓</span>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Compte créé !</h2>
+          <p className="text-gray-600 mb-4">
+            Vérifiez votre email pour confirmer votre compte.
+          </p>
+          <p className="text-sm text-gray-500">
+            Redirection vers la page de connexion...
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -57,7 +97,7 @@ export default function Login() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
 
-      {/* Login Card */}
+      {/* Register Card */}
       <div className="relative w-full max-w-md">
         <div className="glass-effect rounded-2xl shadow-2xl p-8 border border-gray-200/50">
           {/* Logo & Title */}
@@ -65,8 +105,8 @@ export default function Login() {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-2xl mb-4">
               <span className="text-3xl font-bold text-white">T1</span>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">TimeOne</h1>
-            <p className="text-gray-600">Dashboard de Suivi & Optimisation</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Créer un compte</h1>
+            <p className="text-gray-600">Rejoignez TimeOne</p>
           </div>
 
           {/* Error Message */}
@@ -76,8 +116,29 @@ export default function Login() {
             </div>
           )}
 
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Register Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Name Field */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                Nom complet
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Jean Dupont"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  required
+                />
+              </div>
+            </div>
+
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -90,8 +151,8 @@ export default function Login() {
                 <input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="votre.email@exemple.com"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   required
@@ -111,8 +172,8 @@ export default function Login() {
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="••••••••"
                   className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   required
@@ -131,21 +192,25 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-600">Se souvenir de moi</span>
+            {/* Confirm Password Field */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                Confirmer le mot de passe
               </label>
-              <button
-                type="button"
-                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-              >
-                Mot de passe oublié ?
-              </button>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  placeholder="••••••••"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  required
+                />
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -155,26 +220,26 @@ export default function Login() {
               className="w-full flex items-center justify-center px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               {loading ? (
-                <span>Connexion en cours...</span>
+                <span>Création du compte...</span>
               ) : (
                 <>
-                  <span>Se connecter</span>
+                  <span>Créer mon compte</span>
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Info */}
+          {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Pas encore de compte ?{' '}
+              Déjà un compte ?{' '}
               <button
                 type="button"
-                onClick={() => navigate('/register')}
+                onClick={() => navigate('/login')}
                 className="text-primary-600 hover:text-primary-700 font-medium"
               >
-                Créer un compte
+                Se connecter
               </button>
             </p>
           </div>
