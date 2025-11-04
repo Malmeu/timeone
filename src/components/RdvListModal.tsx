@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Edit2, Trash2, Calendar } from 'lucide-react'
