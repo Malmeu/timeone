@@ -46,15 +46,15 @@ export default function ProjectCard({ projet, onUpdate }: ProjectCardProps) {
   }
 
   return (
-    <div className={`glass-effect rounded-xl p-6 card-shadow-lg border-2 ${getAlertColor(tauxJour)}`}>
+    <div className={`glass-effect rounded-xl p-6 card-shadow-lg border-2 ${getAlertColor(tauxJour)} ${isPaused ? 'opacity-60 grayscale' : ''} transition-all duration-300`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-semibold text-gray-900">{projet.nom}</h3>
+            <h3 className={`text-lg font-semibold ${isPaused ? 'text-gray-600' : 'text-gray-900'}`}>{projet.nom}</h3>
             {isPaused && (
-              <span className="px-2 py-1 text-xs font-medium bg-gray-200 text-gray-700 rounded-full">
-                En pause
+              <span className="px-2 py-1 text-xs font-medium bg-gray-300 text-gray-800 rounded-full">
+                ⏸ En pause
               </span>
             )}
           </div>
@@ -152,15 +152,22 @@ export default function ProjectCard({ projet, onUpdate }: ProjectCardProps) {
       <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
         <div>
           <div className="text-xs text-gray-500">Solde RDV restant</div>
-          <div className="text-xl font-bold text-gray-900">{projet.solde_rdv}</div>
+          <div className={`text-xl font-bold ${isPaused ? 'text-gray-600' : 'text-gray-900'}`}>{projet.solde_rdv}</div>
         </div>
-        <button
-          onClick={() => setShowRdvModal(true)}
-          className="flex items-center px-3 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <Calendar className="w-4 h-4 mr-1" />
-          Voir RDV
-        </button>
+        {isPaused ? (
+          <div className="flex items-center px-3 py-2 text-sm bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed">
+            <Calendar className="w-4 h-4 mr-1" />
+            Projet en pause
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowRdvModal(true)}
+            className="flex items-center px-3 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Calendar className="w-4 h-4 mr-1" />
+            Voir RDV
+          </button>
+        )}
       </div>
 
       {/* Modal RDV */}
