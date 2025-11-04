@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Plus, RefreshCw } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import ProjectCard from '@/components/ProjectCard'
+import AddRdvModal from '@/components/AddRdvModal'
 
 export default function Projects() {
   const { projets, loading, refetch } = useProjects()
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showAddRdvModal, setShowAddRdvModal] = useState(false)
 
   if (loading) {
     return (
@@ -30,18 +32,25 @@ export default function Projects() {
         </div>
         <div className="flex space-x-3">
           <button
+            onClick={() => setShowAddRdvModal(true)}
+            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter un RDV
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center px-4 py-2 bg-white border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nouveau Projet
+          </button>
+          <button
             onClick={refetch}
             className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Actualiser
-          </button>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Nouveau Projet
           </button>
         </div>
       </div>
@@ -74,22 +83,34 @@ export default function Projects() {
         </div>
       )}
 
-      {/* TODO: Modal d'ajout de projet */}
+      {/* Modal d'ajout de projet (placeholder) */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 card-shadow-lg">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Nouveau Projet</h2>
-            <p className="text-gray-500 mb-4">
-              Fonctionnalité à implémenter : formulaire d'ajout de projet
+            <p className="text-gray-600 mb-6">
+              Fonctionnalité en développement. Formulaire d'ajout de projet à venir.
             </p>
             <button
               onClick={() => setShowAddModal(false)}
-              className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
             >
               Fermer
             </button>
           </div>
         </div>
+      )}
+
+      {/* Modal d'ajout de RDV */}
+      {showAddRdvModal && (
+        <AddRdvModal
+          projets={projets}
+          onClose={() => setShowAddRdvModal(false)}
+          onSuccess={() => {
+            refetch()
+            setShowAddRdvModal(false)
+          }}
+        />
       )}
     </div>
   )
