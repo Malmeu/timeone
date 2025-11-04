@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X, Edit2, Trash2, Calendar } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { format } from 'date-fns'
@@ -99,9 +100,16 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
     }
   }
 
-  return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
-      <div className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] overflow-hidden shadow-2xl flex flex-col">
+  const modalContent = (
+    <div 
+      className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4" 
+      style={{ margin: 0 }}
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] overflow-hidden shadow-2xl flex flex-col" 
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
@@ -232,4 +240,6 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
       </div>
     </div>
   )
+
+  return createPortal(modalContent, document.body)
 }
