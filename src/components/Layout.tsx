@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Calendar, FolderKanban } from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { LayoutDashboard, Calendar, FolderKanban, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import NotificationCenter from './NotificationCenter'
 import { useNotifications } from '@/contexts/NotificationContext'
@@ -11,6 +11,13 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { notifications, markAsRead, clearAll } = useNotifications()
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated')
+    localStorage.removeItem('userEmail')
+    navigate('/login')
+  }
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -49,6 +56,17 @@ export default function Layout({ children }: LayoutProps) {
               )
             })}
           </nav>
+
+          {/* Logout Button */}
+          <div className="p-4 border-t border-gray-200">
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <LogOut className="w-5 h-5 mr-3" />
+              Déconnexion
+            </button>
+          </div>
         </div>
       </div>
 
