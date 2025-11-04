@@ -7,7 +7,6 @@ import ProjectCard from '@/components/ProjectCard'
 import AlertCard from '@/components/AlertCard'
 import RecommendationCard from '@/components/RecommendationCard'
 import AddRdvModal from '@/components/AddRdvModal'
-import NotificationSystem from '@/components/NotificationSystem'
 
 export default function Dashboard() {
   const { projets, loading: loadingProjets, refetch: refetchProjets } = useProjects()
@@ -56,10 +55,8 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <NotificationSystem projets={projets} />
-      <div className="space-y-8">
-        {/* Header */}
+    <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
@@ -173,7 +170,6 @@ export default function Dashboard() {
           }}
         />
       )}
-      </div>
-    </>
+    </div>
   )
 }

@@ -91,9 +91,8 @@ export default function AddRdvModal({ projets, onClose, onSuccess }: AddRdvModal
               value={formData.date_heure}
               onChange={(e) => setFormData({ ...formData, date_heure: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              max={new Date().toISOString().slice(0, 16)}
             />
-            <p className="text-xs text-gray-500 mt-1">Vous pouvez sélectionner une date antérieure</p>
+            <p className="text-xs text-gray-500 mt-1">Vous pouvez sélectionner n'importe quelle date (passée, présente ou future)</p>
           </div>
 
           {/* Opérateur */}

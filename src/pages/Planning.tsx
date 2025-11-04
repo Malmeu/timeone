@@ -110,33 +110,33 @@ export default function Planning() {
         </div>
       )}
 
-      {/* Légende */}
+      {/* Recommandations */}
       <div className="glass-effect rounded-xl p-6">
-        <h3 className="font-semibold text-gray-900 mb-4">Répartition horaire optimisée</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
-              <span className="text-sm font-semibold text-primary-700">08-10</span>
-            </div>
-            <span className="text-sm text-gray-600">Hyundai</span>
+        <h3 className="font-semibold text-gray-900 mb-4">💡 Recommandations pour optimiser votre planning</h3>
+        <div className="space-y-3">
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+            <p className="text-sm text-blue-900">
+              <span className="font-semibold">08h-10h :</span> Commencez par Hyundai (volume important, 2.27 RDV/jour). 
+              C'est le projet avec le plus gros objectif quotidien.
+            </p>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <span className="text-sm font-semibold text-blue-700">10-12</span>
-            </div>
-            <span className="text-sm text-gray-600">EBP, Sage PE, Quadra, 6XPOS</span>
+          <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg">
+            <p className="text-sm text-purple-900">
+              <span className="font-semibold">10h-12h :</span> Période productive avant la pause. Concentrez-vous sur 
+              EBP, Sage PE, Quadra et 6XPOS en parallèle (objectifs moyens de 0.90-1.36 RDV/jour).
+            </p>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <span className="text-sm font-semibold text-purple-700">13-15</span>
-            </div>
-            <span className="text-sm text-gray-600">Canal +, Danone</span>
+          <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg">
+            <p className="text-sm text-orange-900">
+              <span className="font-semibold">13h-15h :</span> Après la pause, traitez Canal + et Danone. 
+              Danone a un objectif plus élevé (1.36 RDV/jour), priorisez-le si nécessaire.
+            </p>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <span className="text-sm font-semibold text-green-700">15-17</span>
-            </div>
-            <span className="text-sm text-gray-600">Ayvens</span>
+          <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+            <p className="text-sm text-green-900">
+              <span className="font-semibold">15h-17h :</span> Terminez avec Ayvens (0.45 RDV/jour). 
+              Utilisez ce créneau pour rattraper les retards des autres projets si nécessaire.
+            </p>
           </div>
         </div>
       </div>

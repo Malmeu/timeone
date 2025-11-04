@@ -1,12 +1,15 @@
 import { Link, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Calendar, FolderKanban } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import NotificationCenter from './NotificationCenter'
+import { useNotifications } from '@/contexts/NotificationContext'
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const { notifications, markAsRead, clearAll } = useNotifications()
   const location = useLocation()
 
   const navigation = [
@@ -51,6 +54,19 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main content */}
       <div className="pl-64">
+        {/* Header */}
+        <header className="glass-effect border-b border-gray-200 sticky top-0 z-10">
+          <div className="px-8 py-4 flex items-center justify-between">
+            <div className="text-sm text-gray-500">
+              Dashboard de Suivi & Optimisation
+            </div>
+            <NotificationCenter
+              notifications={notifications}
+              onMarkAsRead={markAsRead}
+              onClearAll={clearAll}
+            />
+          </div>
+        </header>
         <main className="p-8">{children}</main>
       </div>
     </div>

@@ -99,8 +99,8 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-3xl w-full max-h-[80vh] overflow-hidden card-shadow-lg flex flex-col">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-8">
+      <div className="bg-white rounded-2xl w-full max-w-5xl h-[85vh] overflow-hidden card-shadow-lg flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
