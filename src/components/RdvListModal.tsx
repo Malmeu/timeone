@@ -78,6 +78,7 @@ export default function RdvListModal({ projetId, projetNom, onClose, onUpdate }:
     if (!editingId) return
 
     try {
+      // @ts-ignore - Supabase type issue
       const { error } = await supabase
         .from('rdv')
         .update({
