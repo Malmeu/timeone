@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { RefreshCw, TrendingUp, Target, AlertCircle, Plus } from 'lucide-react'
+import { RefreshCw, TrendingUp, Target, AlertCircle, Plus, Download } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import { useAlertes } from '@/hooks/useAlertes'
 import { useNotificationMonitor } from '@/hooks/useNotificationMonitor'
@@ -9,15 +9,40 @@ import AlertCard from '@/components/AlertCard'
 import RecommendationCard from '@/components/RecommendationCard'
 import AddRdvModal from '@/components/AddRdvModal'
 import AddProjetModal from '@/components/AddProjetModal'
+import { syncTimeOneStats } from '@/services/timeone'
 
 export default function Dashboard() {
   const { projets, loading: loadingProjets, refetch: refetchProjets } = useProjects()
   const { alertes, loading: loadingAlertes } = useAlertes()
   const [showAddRdvModal, setShowAddRdvModal] = useState(false)
   const [showAddProjetModal, setShowAddProjetModal] = useState(false)
+  const [syncingStats, setSyncingStats] = useState(false)
   
   // Monitoring des notifications
   useNotificationMonitor(projets)
+
+  const handleSyncStats = async () => {
+    setSyncingStats(true)
+    try {
+      // Synchroniser les 7 derniers jours par défaut
+      const result = await syncTimeOneStats()
+      if (result.success) {
+        const msg = result.message || 'Synchronisation réussie !'
+        const details = result.results 
+          ? `\n\n📊 Détails:\n• ${result.results.imported} RDV importés\n• ${result.results.skipped} ignorés (déjà existants)\n• Période: ${result.period?.startDate} → ${result.period?.endDate}`
+          : ''
+        alert(msg + details)
+        refetchProjets() // Recharger les projets pour mettre à jour les stats
+      } else {
+        alert('Erreur lors de la synchronisation : ' + (result.error || 'Erreur inconnue'))
+      }
+    } catch (error) {
+      console.error('Sync stats error:', error)
+      alert('Erreur lors de la synchronisation des statistiques')
+    } finally {
+      setSyncingStats(false)
+    }
+  }
 
   const recommendation = useMemo(() => {
     if (projets.length === 0) return null
@@ -69,6 +94,23 @@ export default function Dashboard() {
           <p className="text-gray-500 mt-1">Vue d'ensemble de vos projets</p>
         </div>
         <div className="flex space-x-3">
+          <button
+            onClick={handleSyncStats}
+            disabled={syncingStats}
+            className="flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {syncingStats ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Sync Stats...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                Sync Stats
+              </>
+            )}
+          </button>
           <button
             onClick={() => setShowAddProjetModal(true)}
             className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
