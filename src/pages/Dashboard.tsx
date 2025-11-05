@@ -59,10 +59,13 @@ export default function Dashboard() {
   }, [projets])
 
   const stats = useMemo(() => {
-    const totalRdvJour = projets.reduce((sum, p) => sum + (p.rdv_realises_jour || 0), 0)
-    const totalObjectifJour = projets.reduce((sum, p) => sum + p.objectif_quotidien, 0)
-    const totalRdvMois = projets.reduce((sum, p) => sum + (p.rdv_realises_mois || 0), 0)
-    const totalObjectifMois = projets.reduce((sum, p) => sum + p.objectif_mensuel, 0)
+    // Filtrer uniquement les projets actifs pour les calculs
+    const projetsActifs = projets.filter(p => p.statut === 'actif')
+    
+    const totalRdvJour = projetsActifs.reduce((sum, p) => sum + (p.rdv_realises_jour || 0), 0)
+    const totalObjectifJour = projetsActifs.reduce((sum, p) => sum + p.objectif_quotidien, 0)
+    const totalRdvMois = projetsActifs.reduce((sum, p) => sum + (p.rdv_realises_mois || 0), 0)
+    const totalObjectifMois = projetsActifs.reduce((sum, p) => sum + p.objectif_mensuel, 0)
     
     return {
       rdvJour: totalRdvJour,
