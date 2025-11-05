@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { RefreshCw, Calendar, Clock } from 'lucide-react'
+import { RefreshCw, Calendar, Clock, Plus } from 'lucide-react'
 import { usePlanning } from '@/hooks/usePlanning'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import AddPlanningModal from '@/components/AddPlanningModal'
 
 export default function Planning() {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const { planning, loading, refetch } = usePlanning(selectedDate)
+  const [showAddModal, setShowAddModal] = useState(false)
 
   if (loading) {
     return (
@@ -36,6 +38,13 @@ export default function Planning() {
             onChange={(e) => setSelectedDate(new Date(e.target.value))}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           />
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter un créneau
+          </button>
           <button
             onClick={refetch}
             className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -140,6 +149,14 @@ export default function Planning() {
           </div>
         </div>
       </div>
+
+      {/* Modal d'ajout de créneau */}
+      <AddPlanningModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSuccess={refetch}
+        selectedDate={selectedDate}
+      />
     </div>
   )
 }
