@@ -15,16 +15,28 @@ export default function TestApi() {
   const [period, setPeriod] = useState(30) // Jours
   const [status, setStatus] = useState('2') // 0=refusé, 1=attente, 2=approuvé, 3=tous
 
-  const TIMEONE_PARTID = '64040'
-  const TIMEONE_API_KEY = 'a4f8ffae42da880da36a26a1d1f4574d'
+  const SUPABASE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`
 
-  // Test 1: Récupérer les programmes
+  // Test 1: Récupérer les programmes via Edge Function
   const testPrograms = async () => {
     const startTime = Date.now()
     try {
-      const url = `https://publisher.performance.timeone.io/xmlProgAff.php?partid=${TIMEONE_PARTID}&key=${TIMEONE_API_KEY}`
-      const response = await fetch(url)
-      const xml = await response.text()
+      const response = await fetch(`${SUPABASE_FUNCTION_URL}/sync-timeone-programs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({ dryRun: true }) // Mode test sans insertion
+      })
+      
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Erreur inconnue')
+      }
+
+      const xml = result.xmlContent || ''
 
       // Parser les programmes
       const programRegex = /<program[^>]*id="([^"]*)"[^>]*>([\s\S]*?)<\/program>/gi
@@ -58,16 +70,34 @@ export default function TestApi() {
     }
   }
 
-  // Test 2: Récupérer les actions/stats
+  // Test 2: Récupérer les actions/stats via Edge Function
   const testActions = async () => {
     const startTime = Date.now()
     try {
       const endDate = new Date().toISOString().split('T')[0]
       const startDate = new Date(Date.now() - period * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       
-      const url = `http://api.publicidees.com/subid.php5?k=${TIMEONE_API_KEY}&p=${TIMEONE_PARTID}&dd=${startDate}&df=${endDate}&s=${status}&td=a`
-      const response = await fetch(url)
-      const xml = await response.text()
+      const response = await fetch(`${SUPABASE_FUNCTION_URL}/sync-timeone-stats`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({ 
+          startDate,
+          endDate,
+          status,
+          dryRun: true // Mode test sans insertion
+        })
+      })
+      
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Erreur inconnue')
+      }
+
+      const xml = result.xmlContent || ''
 
       // Parser les actions
       const actionRegex = /<action([^>]*)\/>/gi

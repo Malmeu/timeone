@@ -22,6 +22,10 @@ serve(async (req) => {
   }
 
   try {
+    // Récupérer les paramètres de la requête
+    const body = req.method === 'POST' ? await req.json() : {}
+    const dryRun = body.dryRun || false // Mode test sans insertion
+
     // Paramètres TimeOne API
     const TIMEONE_PARTID = '64040'
     const TIMEONE_API_KEY = 'a4f8ffae42da880da36a26a1d1f4574d'
@@ -41,6 +45,22 @@ serve(async (req) => {
     // Parser le XML (simple parsing pour extraire les programmes)
     const programs = parseTimeOneXML(xmlText)
     console.log('Programs parsed:', programs.length)
+
+    // Mode test : retourner le XML sans insertion
+    if (dryRun) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: `Mode test: ${programs.length} programmes trouvés`,
+          xmlContent: xmlText,
+          programs: programs.map(p => ({ id: p.id, name: p.name }))
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      )
+    }
 
     // Connexion à Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!

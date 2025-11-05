@@ -34,9 +34,11 @@ serve(async (req) => {
 
   try {
     // Récupérer les paramètres de la requête
-    const body: SyncStatsRequest = req.method === 'POST' 
+    const body: any = req.method === 'POST' 
       ? await req.json() 
       : {}
+
+    const dryRun = body.dryRun || false // Mode test sans insertion
 
     // Dates par défaut : 30 derniers jours (1 mois)
     const endDate = body.endDate || new Date().toISOString().split('T')[0]
@@ -62,6 +64,29 @@ serve(async (req) => {
     // Parser le XML pour extraire les actions
     const actions = parseTimeOneActionsXML(xmlText)
     console.log('Actions parsed:', actions.length)
+
+    // Mode test : retourner le XML sans insertion
+    if (dryRun) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: `Mode test: ${actions.length} actions trouvées`,
+          period: { startDate, endDate },
+          status: status === '3' ? 'Tous' : status === '2' ? 'Approuvés' : status === '1' ? 'En attente' : 'Refusés',
+          xmlContent: xmlText,
+          actions: actions.slice(0, 10).map(a => ({
+            id: a.id,
+            date: a.actionDate,
+            commission: a.commission,
+            programName: a.programName
+          }))
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      )
+    }
 
     // Connexion à Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
