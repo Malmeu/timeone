@@ -40,7 +40,7 @@ export function useFinancialStats() {
       }, 0) || 0
 
       const totalVentes = rdvs?.filter(rdv => 
-        rdv.statut === 'réalisé' && rdv.type_action === 'vente'
+        (rdv.statut === 'réalisé' || rdv.statut === 'realise') && rdv.type_action === 'vente'
       ).length || 0
 
       const montantPanier = rdvs?.reduce((sum, rdv) => {
@@ -49,7 +49,9 @@ export function useFinancialStats() {
 
       // Calculer le taux de validation
       const totalActions = rdvs?.length || 0
-      const actionsApprouvees = rdvs?.filter(rdv => rdv.statut === 'réalisé').length || 0
+      const actionsApprouvees = rdvs?.filter(rdv => 
+        rdv.statut === 'réalisé' || rdv.statut === 'realise'
+      ).length || 0
       const tauxValidation = totalActions > 0 ? (actionsApprouvees / totalActions) * 100 : 0
 
       setStats({
