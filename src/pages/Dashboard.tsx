@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { RefreshCw, TrendingUp, Target, AlertCircle, Plus, Download } from 'lucide-react'
+import { RefreshCw, TrendingUp, Target, AlertCircle, Plus, Download, Filter } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import { useAlertes } from '@/hooks/useAlertes'
 import { useNotificationMonitor } from '@/hooks/useNotificationMonitor'
@@ -17,6 +17,8 @@ export default function Dashboard() {
   const [showAddRdvModal, setShowAddRdvModal] = useState(false)
   const [showAddProjetModal, setShowAddProjetModal] = useState(false)
   const [syncingStats, setSyncingStats] = useState(false)
+  const [selectedProjets, setSelectedProjets] = useState<string[]>([])
+  const [showFilter, setShowFilter] = useState(false)
   
   // Monitoring des notifications
   useNotificationMonitor(projets)
@@ -44,23 +46,29 @@ export default function Dashboard() {
     }
   }
 
+  // Projets filtrés selon la sélection
+  const projetsFiltres = useMemo(() => {
+    if (selectedProjets.length === 0) return projets
+    return projets.filter(p => selectedProjets.includes(p.id as string))
+  }, [projets, selectedProjets])
+
   const recommendation = useMemo(() => {
-    if (projets.length === 0) return null
-    const rec = getProjectRecommendation(projets)
+    if (projetsFiltres.length === 0) return null
+    const rec = getProjectRecommendation(projetsFiltres)
     if (!rec) return null
     
-    const projet = projets.find(p => p.id === rec.projet_id)
+    const projet = projetsFiltres.find(p => p.id === rec.projet_id)
     if (!projet) return null
     
     return {
       ...rec,
       nom: projet.nom,
     }
-  }, [projets])
+  }, [projetsFiltres])
 
   const stats = useMemo(() => {
     // Filtrer uniquement les projets actifs pour les calculs
-    const projetsActifs = projets.filter(p => p.statut === 'actif')
+    const projetsActifs = projetsFiltres.filter(p => p.statut === 'actif')
     
     const totalRdvJour = projetsActifs.reduce((sum, p) => sum + (p.rdv_realises_jour || 0), 0)
     const totalObjectifJour = projetsActifs.reduce((sum, p) => sum + p.objectif_quotidien, 0)
@@ -97,6 +105,17 @@ export default function Dashboard() {
           <p className="text-gray-500 mt-1">Vue d'ensemble de vos projets</p>
         </div>
         <div className="flex space-x-3">
+          <button
+            onClick={() => setShowFilter(!showFilter)}
+            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+              selectedProjets.length > 0
+                ? 'bg-primary-600 text-white hover:bg-primary-700'
+                : 'bg-white border border-gray-300 hover:bg-gray-50'
+            }`}
+          >
+            <Filter className="w-4 h-4 mr-2" />
+            Filtrer {selectedProjets.length > 0 && `(${selectedProjets.length})`}
+          </button>
           <button
             onClick={handleSyncStats}
             disabled={syncingStats}
@@ -137,6 +156,57 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
+
+      {/* Panneau de filtrage */}
+      {showFilter && (
+        <div className="glass-effect rounded-xl p-6 card-shadow">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Filtrer par projets</h3>
+            <button
+              onClick={() => setSelectedProjets([])}
+              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            >
+              Réinitialiser
+            </button>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {projets.map((projet) => {
+              const isSelected = selectedProjets.includes(projet.id as string)
+              return (
+                <button
+                  key={projet.id}
+                  onClick={() => {
+                    if (isSelected) {
+                      setSelectedProjets(selectedProjets.filter(id => id !== projet.id))
+                    } else {
+                      setSelectedProjets([...selectedProjets, projet.id as string])
+                    }
+                  }}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${
+                    isSelected
+                      ? 'border-primary-500 bg-primary-50'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                  } ${projet.statut === 'pause' ? 'opacity-60' : ''}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-sm text-gray-900">{projet.nom}</span>
+                    {isSelected && (
+                      <div className="w-5 h-5 bg-primary-600 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  {projet.statut === 'pause' && (
+                    <span className="text-xs text-gray-500 mt-1 block">En pause</span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Stats globales */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -192,15 +262,22 @@ export default function Dashboard() {
 
       {/* Projets */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Vos Projets</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Vos Projets {selectedProjets.length > 0 && `(${projetsFiltres.length} filtré${projetsFiltres.length > 1 ? 's' : ''})`}
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projets.map((projet) => (
+          {projetsFiltres.map((projet) => (
             <ProjectCard key={projet.id} projet={projet} onUpdate={refetchProjets} />
           ))}
         </div>
-        {projets.length === 0 && (
+        {projetsFiltres.length === 0 && (
           <div className="text-center py-12 glass-effect rounded-xl">
-            <p className="text-gray-500">Aucun projet trouvé</p>
+            <p className="text-gray-500">
+              {selectedProjets.length > 0 
+                ? 'Aucun projet ne correspond aux filtres sélectionnés'
+                : 'Aucun projet trouvé'
+              }
+            </p>
           </div>
         )}
       </div>
