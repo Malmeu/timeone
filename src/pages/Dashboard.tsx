@@ -2,11 +2,13 @@ import { useMemo, useState } from 'react'
 import { RefreshCw, TrendingUp, Target, AlertCircle, Plus, Download } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import { useAlertes } from '@/hooks/useAlertes'
+import { useFinancialStats } from '@/hooks/useFinancialStats'
 import { useNotificationMonitor } from '@/hooks/useNotificationMonitor'
 import { getProjectRecommendation } from '@/lib/scoring'
 import ProjectCard from '@/components/ProjectCard'
 import AlertCard from '@/components/AlertCard'
 import RecommendationCard from '@/components/RecommendationCard'
+import FinancialStatsCard from '@/components/FinancialStatsCard'
 import AddRdvModal from '@/components/AddRdvModal'
 import AddProjetModal from '@/components/AddProjetModal'
 import { syncTimeOneStats } from '@/services/timeone'
@@ -14,6 +16,7 @@ import { syncTimeOneStats } from '@/services/timeone'
 export default function Dashboard() {
   const { projets, loading: loadingProjets, refetch: refetchProjets } = useProjects()
   const { alertes, loading: loadingAlertes } = useAlertes()
+  const { stats: financialStats, refetch: refetchStats } = useFinancialStats()
   const [showAddRdvModal, setShowAddRdvModal] = useState(false)
   const [showAddProjetModal, setShowAddProjetModal] = useState(false)
   const [syncingStats, setSyncingStats] = useState(false)
@@ -32,7 +35,8 @@ export default function Dashboard() {
           ? `\n\n📊 Détails:\n• ${result.results.imported} RDV importés\n• ${result.results.skipped} ignorés (déjà existants)\n• Période: ${result.period?.startDate} → ${result.period?.endDate}`
           : ''
         alert(msg + details)
-        refetchProjets() // Recharger les projets pour mettre à jour les stats
+        refetchProjets() // Recharger les projets
+        refetchStats() // Recharger les stats financières
       } else {
         alert('Erreur lors de la synchronisation : ' + (result.error || 'Erreur inconnue'))
       }
@@ -177,6 +181,17 @@ export default function Dashboard() {
           <h3 className="text-sm font-medium text-gray-500">Alertes Actives</h3>
           <p className="text-sm text-gray-600 mt-1">Dernières 24h</p>
         </div>
+      </div>
+
+      {/* Statistiques Financières TimeOne */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">💰 Statistiques Financières</h2>
+        <FinancialStatsCard
+          totalCommission={financialStats.totalCommission}
+          totalVentes={financialStats.totalVentes}
+          montantPanier={financialStats.montantPanier}
+          tauxValidation={financialStats.tauxValidation}
+        />
       </div>
 
       {/* Recommandation */}

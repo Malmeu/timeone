@@ -91,12 +91,11 @@ serve(async (req) => {
           continue
         }
 
-        // Vérifier si le RDV existe déjà (par action ID dans un champ custom ou par date)
+        // Vérifier si le RDV existe déjà (par action_id)
         const { data: existingRdv } = await supabase
           .from('rdv')
           .select('id')
-          .eq('projet_id', projet.id)
-          .eq('date_heure', action.actionDate)
+          .eq('action_id', action.id)
           .single()
 
         if (existingRdv) {
@@ -105,14 +104,18 @@ serve(async (req) => {
           continue
         }
 
-        // Créer un nouveau RDV
+        // Créer un nouveau RDV avec les données financières
         const { data: newRdv, error } = await supabase
           .from('rdv')
           .insert({
             projet_id: projet.id,
             date_heure: action.actionDate,
             operateur: action.operateur || 'TimeOne Auto',
-            statut: getStatutFromTimeOneStatus(action.status)
+            statut: getStatutFromTimeOneStatus(action.status),
+            action_id: action.id,
+            commission: parseFloat(action.commission) || 0,
+            montant_panier: action.cartAmount ? parseFloat(action.cartAmount) : 0,
+            type_action: action.type === '4' ? 'lead' : 'vente'
           })
           .select()
           .single()
