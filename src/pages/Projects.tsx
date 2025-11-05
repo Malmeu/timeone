@@ -1,14 +1,34 @@
 import { useState } from 'react'
-import { Plus, RefreshCw } from 'lucide-react'
+import { Plus, RefreshCw, Download } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
 import ProjectCard from '@/components/ProjectCard'
 import AddRdvModal from '@/components/AddRdvModal'
 import AddProjetModal from '@/components/AddProjetModal'
+import { syncTimeOnePrograms } from '@/services/timeone'
 
 export default function Projects() {
   const { projets, loading, refetch } = useProjects()
   const [showAddModal, setShowAddModal] = useState(false)
   const [showAddRdvModal, setShowAddRdvModal] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+
+  const handleSyncTimeOne = async () => {
+    setSyncing(true)
+    try {
+      const result = await syncTimeOnePrograms()
+      if (result.success) {
+        alert(result.message || 'Synchronisation réussie !')
+        refetch() // Recharger les projets
+      } else {
+        alert('Erreur lors de la synchronisation : ' + (result.error || 'Erreur inconnue'))
+      }
+    } catch (error) {
+      console.error('Sync error:', error)
+      alert('Erreur lors de la synchronisation')
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -32,6 +52,23 @@ export default function Projects() {
           </p>
         </div>
         <div className="flex space-x-3">
+          <button
+            onClick={handleSyncTimeOne}
+            disabled={syncing}
+            className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {syncing ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Synchronisation...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                Sync TimeOne
+              </>
+            )}
+          </button>
           <button
             onClick={() => setShowAddRdvModal(true)}
             className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
