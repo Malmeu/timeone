@@ -17,40 +17,42 @@ export function usePlanning(date: Date = new Date()) {
         .from('planning')
         .select(`
           *,
-          projets (nom, objectif_quotidien)
+          projets (nom, objectif_quotidien, statut)
         `)
         .eq('date', dateStr)
         .order('creneau_debut')
 
       if (planningError) throw planningError
 
-      // Calculer le taux d'avancement en temps réel pour chaque créneau
+      // Filtrer les projets actifs et calculer le taux d'avancement
       const planningWithProgress = await Promise.all(
-        (data || []).map(async (item: any) => {
-          let taux_avancement = 0
-          
-          if (item.projet_id && item.projets) {
-            // Compter les RDV réalisés pour toute la journée
-            const startOfDay = `${dateStr}T00:00:00`
-            const endOfDay = `${dateStr}T23:59:59`
+        (data || [])
+          .filter(item => item.projets?.statut === 'actif') // Ne garder que les projets actifs
+          .map(async (item: any) => {
+            let taux_avancement = 0
             
-            const { count } = await supabase
-              .from('rdv')
-              .select('*', { count: 'exact', head: true })
-              .eq('projet_id', item.projet_id)
-              .gte('date_heure', startOfDay)
-              .lte('date_heure', endOfDay)
+            if (item.projet_id && item.projets) {
+              // Compter les RDV réalisés pour toute la journée
+              const startOfDay = `${dateStr}T00:00:00`
+              const endOfDay = `${dateStr}T23:59:59`
+              
+              const { count } = await supabase
+                .from('rdv')
+                .select('*', { count: 'exact', head: true })
+                .eq('projet_id', item.projet_id)
+                .gte('date_heure', startOfDay)
+                .lte('date_heure', endOfDay)
+              
+              // Calculer le taux basé sur l'objectif quotidien
+              taux_avancement = ((count || 0) / item.projets.objectif_quotidien) * 100
+            }
             
-            // Calculer le taux basé sur l'objectif quotidien total
-            taux_avancement = ((count || 0) / item.projets.objectif_quotidien) * 100
-          }
-          
-          return {
-            ...item,
-            projet_nom: item.projets?.nom || 'Non assigné',
-            taux_avancement: taux_avancement,
-          }
-        })
+            return {
+              ...item,
+              projet_nom: item.projets?.nom || 'Non assigné',
+              taux_avancement: taux_avancement,
+            }
+          })
       )
 
       setPlanning(planningWithProgress)

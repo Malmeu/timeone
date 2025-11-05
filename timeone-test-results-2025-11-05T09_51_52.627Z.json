@@ -1,0 +1,190 @@
+[
+  {
+    "success": true,
+    "title": "📋 Programmes TimeOne",
+    "data": {
+      "total": 8,
+      "programs": [
+        {
+          "id": "7856",
+          "name": "SFR Business"
+        },
+        {
+          "id": "8406",
+          "name": "EBP - BtoB"
+        },
+        {
+          "id": "8144",
+          "name": "Canal Plus Pro"
+        },
+        {
+          "id": "7877",
+          "name": "Hyundai_B2B"
+        },
+        {
+          "id": "8431",
+          "name": "Ayvens"
+        },
+        {
+          "id": "8430",
+          "name": "Quadra Cegid"
+        },
+        {
+          "id": "7924",
+          "name": "SAGE SBCP PE"
+        },
+        {
+          "id": "8426",
+          "name": "6XPOS TELEMARKETING"
+        }
+      ],
+      "xmlLength": 26525
+    },
+    "duration": 7177
+  },
+  {
+    "success": true,
+    "title": "📊 Actions TimeOne",
+    "data": {
+      "total": 0,
+      "period": "2025-08-07 → 2025-11-05",
+      "status": "Tous",
+      "actions": [],
+      "xmlLength": 87
+    },
+    "duration": 7056
+  },
+  {
+    "success": true,
+    "title": "🗄️ Projets en Base",
+    "data": {
+      "total": 8,
+      "projets": [
+        {
+          "id": "f03e2b26-6dca-4c62-9e31-b95a8756784c",
+          "nom": "6XPOS TELEMARKETING"
+        },
+        {
+          "id": "2de674e3-7639-4846-ba8c-6465a7513c03",
+          "nom": "Ayvens"
+        },
+        {
+          "id": "339bb4d2-1522-447d-bdb1-e818ab3697e5",
+          "nom": "Canal Plus Pro"
+        },
+        {
+          "id": "716a2607-b680-4cfb-b7f0-09d74f00f5ed",
+          "nom": "EBP - BtoB"
+        },
+        {
+          "id": "a887981c-fcef-4036-a9c3-9e5d0e1ef2cc",
+          "nom": "Hyundai_B2B"
+        },
+        {
+          "id": "fd1d5220-d300-486a-bb32-e9df396cb5cf",
+          "nom": "Quadra Cegid"
+        },
+        {
+          "id": "684c650c-77ea-4a65-9982-dd369913a7da",
+          "nom": "SAGE SBCP PE"
+        },
+        {
+          "id": "29909130-c91d-4037-ab3b-55bfa36dd8d5",
+          "nom": "SFR Business"
+        }
+      ]
+    },
+    "duration": 6745
+  },
+  {
+    "success": true,
+    "title": "💰 RDV avec Données Financières",
+    "data": {
+      "total": 10,
+      "totalCommission": "479.51",
+      "rdvs": [
+        {
+          "id": "0fb62bbb-34a9-4998-9e2b-6e8b15a7b068",
+          "commission": 59.5,
+          "montant_panier": 216.17,
+          "action_id": "TEST_716a2607-b680-4cfb-b7f0-09d74f00f5ed_2",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "5f89d276-9f0e-40c8-a9fa-42769d3405d1",
+          "commission": 56.4,
+          "montant_panier": 167.18,
+          "action_id": "TEST_339bb4d2-1522-447d-bdb1-e818ab3697e5_2",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "e07620fa-caa0-49b4-b7bd-09ccefe16329",
+          "commission": 54.55,
+          "montant_panier": 112.69,
+          "action_id": "TEST_684c650c-77ea-4a65-9982-dd369913a7da_2",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "a9aa9980-3e85-4552-925b-478a671fe074",
+          "commission": 52.24,
+          "montant_panier": 67.66,
+          "action_id": "TEST_f03e2b26-6dca-4c62-9e31-b95a8756784c_1",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "81e2ba64-d05f-4b52-a0ce-e33573bc2441",
+          "commission": 46.27,
+          "montant_panier": 159.66,
+          "action_id": "TEST_f03e2b26-6dca-4c62-9e31-b95a8756784c_2",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "67687aba-7dc0-4cf2-8306-3524abd69749",
+          "commission": 45.94,
+          "montant_panier": 110.44,
+          "action_id": "TEST_2de674e3-7639-4846-ba8c-6465a7513c03_2",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "71578ab1-d84f-41f0-9e7f-a42320ce5dbb",
+          "commission": 43.58,
+          "montant_panier": 137.74,
+          "action_id": "TEST_fd1d5220-d300-486a-bb32-e9df396cb5cf_2",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "e1dd43b3-4830-4976-931a-1716504f05da",
+          "commission": 42.66,
+          "montant_panier": 124.75,
+          "action_id": "TEST_fd1d5220-d300-486a-bb32-e9df396cb5cf_1",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "1b9e501a-b6d1-4c77-a736-6eac2aaa3ee5",
+          "commission": 39.84,
+          "montant_panier": 99.29,
+          "action_id": "TEST_29909130-c91d-4037-ab3b-55bfa36dd8d5_1",
+          "type_action": "vente",
+          "statut": "realise"
+        },
+        {
+          "id": "3a1bdd06-4d53-432a-8e53-8efe96bbe046",
+          "commission": 38.53,
+          "montant_panier": 50.89,
+          "action_id": "TEST_2de674e3-7639-4846-ba8c-6465a7513c03_1",
+          "type_action": "vente",
+          "statut": "realise"
+        }
+      ]
+    },
+    "duration": 6732
+  }
+]

@@ -182,6 +182,3 @@ http://api.publicidees.com/subid.php?k=YOUR_KEY&p=VOTRE_ID&dd=2015-01-
 15&df=2015-01-20&s=1&t=3
 AND
 http://api.publicidees.com/subid.php?k=YOUR_KEY&p=VOTRE_ID&dd=2015-01-
-15&df=2015-01-20&s=2&t=3
-TimeOne SAS au capital de 17.802.739 € - 20-24 rue Jacques Ibert 92300 Levallois-Perret
-Immatriculée au Registre du Commerce et des Sociétés de Nanterre sous le numéro 814 340 675
