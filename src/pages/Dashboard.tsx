@@ -83,7 +83,7 @@ export default function Dashboard() {
       objectifMois: totalObjectifMois,
       tauxMois: totalObjectifMois > 0 ? (totalRdvMois / totalObjectifMois) * 100 : 0,
     }
-  }, [projets])
+  }, [projetsFiltres])
 
   if (loadingProjets) {
     return (
