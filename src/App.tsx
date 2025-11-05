@@ -7,6 +7,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Planning from './pages/Planning'
 import Projects from './pages/Projects'
+import TestApi from './pages/TestApi'
 
 function App() {
   return (
@@ -52,6 +53,16 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Planning />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/test-api"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <TestApi />
                 </Layout>
               </ProtectedRoute>
             }

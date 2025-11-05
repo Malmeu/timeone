@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Calendar, FolderKanban, LogOut } from 'lucide-react'
+import { LayoutDashboard, Calendar, FolderKanban, LogOut, FlaskConical } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import NotificationCenter from './NotificationCenter'
 import { useNotifications } from '@/contexts/NotificationContext'
@@ -23,6 +23,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Planning', href: '/planning', icon: Calendar },
     { name: 'Projets', href: '/projects', icon: FolderKanban },
+    { name: 'Test API', href: '/test-api', icon: FlaskConical },
   ]
 
   return (
