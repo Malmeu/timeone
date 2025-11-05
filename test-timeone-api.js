@@ -50,14 +50,15 @@ async function testPrograms() {
   }
 }
 
-// Test 2: Récupérer les actions des 7 derniers jours
+// Test 2: Récupérer les actions des 90 derniers jours (TOUS les statuts)
 async function testActions() {
   const endDate = new Date().toISOString().split('T')[0]
-  const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const startDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
   
-  const url = `http://api.publicidees.com/subid.php5?k=${TIMEONE_API_KEY}&p=${TIMEONE_PARTID}&dd=${startDate}&df=${endDate}&s=2&td=a`
+  // s=3 pour TOUS les statuts (0=refusé, 1=en attente, 2=approuvé, 3=tous)
+  const url = `http://api.publicidees.com/subid.php5?k=${TIMEONE_API_KEY}&p=${TIMEONE_PARTID}&dd=${startDate}&df=${endDate}&s=3&td=a`
   
-  console.log('🔍 Récupération des actions TimeOne (7 derniers jours)...\n')
+  console.log('🔍 Récupération des actions TimeOne (90 derniers jours - TOUS statuts)...\n')
   console.log('Période:', startDate, '→', endDate, '\n')
   
   try {
