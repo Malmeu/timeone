@@ -27,7 +27,7 @@ export default function Dashboard() {
   const handleSyncStats = async () => {
     setSyncingStats(true)
     try {
-      // Synchroniser les 7 derniers jours par défaut
+      // Synchroniser les 30 derniers jours par défaut
       const result = await syncTimeOneStats()
       if (result.success) {
         const msg = result.message || 'Synchronisation réussie !'

@@ -38,9 +38,9 @@ serve(async (req) => {
       ? await req.json() 
       : {}
 
-    // Dates par défaut : 7 derniers jours
+    // Dates par défaut : 30 derniers jours (1 mois)
     const endDate = body.endDate || new Date().toISOString().split('T')[0]
-    const startDate = body.startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    const startDate = body.startDate || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     const status = body.status || '2' // Par défaut : actions approuvées
 
     // Paramètres TimeOne API SubID

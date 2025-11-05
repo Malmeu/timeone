@@ -69,7 +69,7 @@ export interface SyncStatsResult {
 
 /**
  * Synchronise les statistiques TimeOne (ventes/leads) et crée automatiquement des RDV
- * @param startDate Date de début (format: YYYY-MM-DD) - Par défaut: 7 jours avant
+ * @param startDate Date de début (format: YYYY-MM-DD) - Par défaut: 30 jours avant
  * @param endDate Date de fin (format: YYYY-MM-DD) - Par défaut: aujourd'hui
  * @param status Statut des actions (0=refusé, 1=en attente, 2=approuvé) - Par défaut: 2
  */
